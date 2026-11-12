@@ -16,7 +16,7 @@ The HTML Template Card is not loaded.
 3. Manual installs use `/local/html-template-card.js`, not `/hacsfiles/`.
 4. Hard-refresh the browser (Ctrl+Shift+R, or reload the Companion app).
 
-## Everything shows "—"
+## Everything shows "-"
 
 `is_number()` is failing for every entity. Usually one of:
 
@@ -78,7 +78,7 @@ The card re-renders when a referenced entity changes state, but Home Assistant's
 
 Casting is a session, not a permanent state: a Nest Hub ends it when it idles, reboots, or the network hiccups. Home Assistant does not re-cast on its own. Use [Continuously Casting Dashboard](https://github.com/b0mbays/continuously-casting-dashboard) or a similar integration, and check that its entity for this Hub is enabled and its schedule covers the hours you want. The dashboard itself has nothing to fix here.
 
-If the cast shows a login page or an empty dashboard, sign that device's session in separately — casting uses the Hub's own browser profile, not your admin login.
+If the cast shows a login page or an empty dashboard, sign that device's session in separately: casting uses the Hub's own browser profile, not your admin login.
 
 ## Still stuck
 

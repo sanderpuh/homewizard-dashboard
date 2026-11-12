@@ -67,7 +67,7 @@ Use **Developer Tools → Template** to check a value before wiring it up:
 {{ is_number(states('sensor.electricity_consumption_now')) }}
 ```
 
-The dashboard only plots values where `is_number()` is true. Strings like `unknown`, `unavailable` or `12,3` render as `—`.
+The dashboard only plots values where `is_number()` is true. Strings like `unknown`, `unavailable` or `12,3` render as `-`.
 
 ## Values that work well
 

@@ -22,17 +22,17 @@ The view is a plain panel, so it fits wherever a browser can show a Home Assista
 
 ### Casting to a Nest Hub (tested)
 
-The author runs this card combined with [Continuously Casting Dashboard](https://github.com/b0mbays/continuously-casting-dashboard), which keeps a dashboard open on a Google Nest Hub Gen 2 and re-casts it when it drops. The 1024×600 screen shows the whole layout without scrolling thanks to the panel view.
+You can run this card combined with [Continuously Casting Dashboard](https://github.com/b0mbays/continuously-casting-dashboard), which keeps a dashboard open on a Google Nest Hub Gen 2 and re-casts it when it drops. The 1024×600 screen shows the whole layout without scrolling thanks to the panel view.
 
 Worth knowing before you copy that setup:
 
 - The Nest Hub is a display, not a tablet. Touching the screen does not navigate, so treat the dashboard as read-only and point the cast at this view directly.
-- Cast sessions end when the Hub goes idle or reboots. The casting integration is what brings them back — hence "continuous".
+- Cast sessions end when the Hub goes idle or reboots. The casting integration is what brings them back, hence "continuous".
 - The Hub dims on its own schedule. Adjust the ambient/screen settings in the Google Home app if the dashboard disappears too soon.
 
 ### Wall tablet or old phone in kiosk mode (untested)
 
-An old phone or tablet running a kiosk browser — Fully Kiosk Browser, WallPanel, or the Home Assistant Companion app in kiosk mode — is the classic use for this layout. Point the browser at the dashboard URL and the panel view fills the screen.
+An old phone or tablet running a kiosk browser (Fully Kiosk Browser, WallPanel, or the Home Assistant Companion app in kiosk mode) is the classic use for this layout. Point the browser at the dashboard URL and the panel view fills the screen.
 
 Expect to tune it: a phone in portrait crops the three-column layout badly, so use landscape, and hide the browser chrome in the kiosk settings. Dark theme suits a wall display better than light.
 
@@ -67,7 +67,7 @@ Manual install: drop `html-template-card.js` into `config/www/` and register it 
 
 ### 2. Create a view
 
-Open the dashboard where you want it — a new one, or any existing dashboard in **storage mode**.
+Open the dashboard where you want it: a new one, or any existing dashboard in **storage mode**.
 
 1. Click **Edit dashboard** in the top right corner.
 2. Click **Add view**.
@@ -75,7 +75,7 @@ Open the dashboard where you want it — a new one, or any existing dashboard in
 4. Delete whatever is in the box and paste the entire contents of [`dashboard.yaml`](dashboard.yaml).
 5. Click **Save**, then **Done**.
 
-That is the base done: the view exists, the panel layout is set and the card renders. It will show placeholders until you point it at your own sensors — see [Configuration](#configuration).
+That is the base done: the view exists, the panel layout is set and the card renders. It will show placeholders until you point it at your own sensors. See [Configuration](#configuration).
 
 > The view is defined as `type: panel`, so it always fills the screen. If you paste it into an existing dashboard, it simply becomes one more tab in the sidebar.
 
@@ -117,8 +117,8 @@ Restart Home Assistant, then open **HomeWizard** in the sidebar. Both example fi
 
 All of it happens in two places inside `dashboard.yaml`:
 
-1. **Measurement registry** — describe each sensor once: name, entity, unit, icon, category, gauge maximum, decimals.
-2. **Display assignments** — pick which measurement IDs appear in which position.
+1. **Measurement registry**: describe each sensor once (name, entity, unit, icon, category, gauge maximum, decimals).
+2. **Display assignments**: pick which measurement IDs appear in which position.
 
 ```jinja
 {% set main_gauge = 'electricity_now' %}

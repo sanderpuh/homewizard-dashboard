@@ -8,7 +8,7 @@ The dashboard is one card with one Jinja template, split into seven numbered sec
 | 2. Display assignments | Chooses what goes where | Yes |
 | 3. Display scale overrides | Per-gauge maximums | Yes |
 | 4. Safe measurement lookup | Loads the selected entries | No |
-| 5. Safe ratios | Converts values to 0–1 | No |
+| 5. Safe ratios | Converts values to 0 to 1 | No |
 | 6. Display formatting | Rounds values, splits decimals | No |
 | 7. SVG display | Layout, colours, icons | Layout only |
 

@@ -385,11 +385,11 @@ cards:
         rather than changing this section.
       #}
 
-      {% set main_display = (main_value | abs | round(main.decimals)) if main_available else '—' %}
-      {% set left_display = (left_value | round(left.decimals)) if left_available else '—' %}
-      {% set right_display = (right_value | round(right.decimals)) if right_available else '—' %}
-      {% set upper_display = ((upper_value | round(0) | int) if (upper_value | abs) >= 10 else (upper_value | round(upper.decimals))) if upper_available else '—' %}
-      {% set lower_display = ((lower_value | round(0) | int) if (lower_value | abs) >= 10 else (lower_value | round(lower.decimals))) if lower_available else '—' %}
+      {% set main_display = (main_value | abs | round(main.decimals)) if main_available else '-' %}
+      {% set left_display = (left_value | round(left.decimals)) if left_available else '-' %}
+      {% set right_display = (right_value | round(right.decimals)) if right_available else '-' %}
+      {% set upper_display = ((upper_value | round(0) | int) if (upper_value | abs) >= 10 else (upper_value | round(upper.decimals))) if upper_available else '-' %}
+      {% set lower_display = ((lower_value | round(0) | int) if (lower_value | abs) >= 10 else (lower_value | round(lower.decimals))) if lower_available else '-' %}
 
       {# Split right-column values into integer and fractional parts, preserving the original SVG alignment. #}
       {% set top_scale = 10 ** top.decimals %}
@@ -411,9 +411,9 @@ cards:
       {% set middle_sign = '-' if middle_value < 0 else '' %}
       {% set bottom_sign = '-' if bottom_value < 0 else '' %}
 
-      {% set top_integer_display = top_sign ~ top_integer if top_available else '—' %}
-      {% set middle_integer_display = middle_sign ~ middle_integer if middle_available else '—' %}
-      {% set bottom_integer_display = bottom_sign ~ bottom_integer if bottom_available else '—' %}
+      {% set top_integer_display = top_sign ~ top_integer if top_available else '-' %}
+      {% set middle_integer_display = middle_sign ~ middle_integer if middle_available else '-' %}
+      {% set bottom_integer_display = bottom_sign ~ bottom_integer if bottom_available else '-' %}
 
       {% set top_fraction_display = ('%0*d' | format(top.decimals, top_fraction)) if top_available and top.decimals > 0 else '' %}
       {% set middle_fraction_display = ('%0*d' | format(middle.decimals, middle_fraction)) if middle_available and middle.decimals > 0 else '' %}
