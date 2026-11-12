@@ -16,37 +16,6 @@ Sample values shown: 1840 W net power consumption, 4.6 kWh self-use solar energy
 - **Daily import/export totals** under the main gauge, shown only when the main gauge is live electricity.
 - **One card, one file.** Everything is inside a single `html-template-card` template, so there is nothing to install besides that card.
 
-## Example setups
-
-The view is a plain panel, so it fits wherever a browser can show a Home Assistant dashboard. Here is how it behaves in each setup, and what to expect.
-
-### Casting to a Nest Hub (tested)
-
-You can run this card combined with [Continuously Casting Dashboard](https://github.com/b0mbays/continuously-casting-dashboard), which keeps a dashboard open on a Google Nest Hub Gen 2 and re-casts it when it drops. The 1024×600 screen shows the whole layout without scrolling thanks to the panel view.
-
-Worth knowing before you copy that setup:
-
-- The Nest Hub is a display, not a tablet. Touching the screen does not navigate, so treat the dashboard as read-only and point the cast at this view directly.
-- Cast sessions end when the Hub goes idle or reboots. The casting integration is what brings them back, hence "continuous".
-- The Hub dims on its own schedule. Adjust the ambient/screen settings in the Google Home app if the dashboard disappears too soon.
-
-### Wall tablet or old phone in kiosk mode (untested)
-
-An old phone or tablet running a kiosk browser (Fully Kiosk Browser, WallPanel, or the Home Assistant Companion app in kiosk mode) is the classic use for this layout. Point the browser at the dashboard URL and the panel view fills the screen.
-
-Expect to tune it: a phone in portrait crops the three-column layout badly, so use landscape, and hide the browser chrome in the kiosk settings. Dark theme suits a wall display better than light.
-
-### Desktop or laptop (untested)
-
-It works as a full-window dashboard, but a 16:9 monitor at desk distance leaves the gauges enormous. Handy for a second monitor that stays on the energy page.
-
-### Where it does not fit
-
-- Not a dashboard for phones you carry around. No navigation, no buttons, no history graphs.
-- Not multi-view. It is one view showing now, today, and nothing else.
-
-If you run it somewhere else and it looks good, open an issue or a PR and it can move from untested to tested.
-
 ## Requirements
 
 | Requirement | Notes |
@@ -115,6 +84,8 @@ Restart Home Assistant, then open **HomeWizard** in the sidebar. Both example fi
 
 ## Configuration
 
+### Dashboard
+
 All of it happens in two places inside `dashboard.yaml`:
 
 1. **Measurement registry**: describe each sensor once (name, entity, unit, icon, category, gauge maximum, decimals).
@@ -150,31 +121,45 @@ Scale overrides let you stretch a gauge without touching the registry. `0` means
 
 Full details in [docs/configuration.md](docs/configuration.md).
 
-## Entities
+### Entities
 
 Every entity ID in the template matches its friendly name, so the dashboard reads like the sensor list in Home Assistant. See [docs/measurements.md](docs/measurements.md) for the full table, and rename yours to match, or edit the `entity:` lines to point at what you have.
 
-## Icons
+### Icons
 
 `bolt`, `solar`, `flame`, `water`, `thermometer`, `battery`, and anything else falls through to a generic bolt. All icons are inline SVG, so they work without any icon set.
 
-## Repository layout
-
-```text
-dashboard.yaml               the view, ready to use
-examples/
-  configuration-lovelace.yaml  lovelace block for configuration.yaml
-  homewizard-dashboard.yaml    dashboard file with the view included
-  sensors-sample.yaml          template sensors for testing
-docs/
-  configuration.md             registry, assignments, overrides, colours
-  measurements.md              every measurement and its entity ID
-  troubleshooting.md           common problems and fixes
-```
-
-## Troubleshooting
+### Troubleshooting
 
 Blank card, `unavailable` values, clipping on odd screen sizes: [docs/troubleshooting.md](docs/troubleshooting.md).
+
+## Example setups
+
+The view is a plain panel, so it fits wherever a browser can show a Home Assistant dashboard. Here is how it behaves in each setup, and what to expect.
+
+### Casting to a Nest Hub (tested)
+
+You can run this card combined with [Continuously Casting Dashboard](https://github.com/b0mbays/continuously-casting-dashboard), which keeps a dashboard open on a Google Nest Hub Gen 2 and re-casts it when it drops. The 1024×600 screen shows the whole layout without scrolling thanks to the panel view.
+
+Worth knowing before you copy that setup:
+
+- The Nest Hub is a display, not a tablet. Touching the screen does not navigate, so treat the dashboard as read-only and point the cast at this view directly.
+- Cast sessions end when the Hub goes idle or reboots. The casting integration is what brings them back, hence "continuous".
+- The Hub dims on its own schedule. Adjust the ambient/screen settings in the Google Home app if the dashboard disappears too soon.
+
+### Wall tablet or old phone in kiosk mode (untested)
+
+An old phone or tablet running a kiosk browser (Fully Kiosk Browser, WallPanel, or the Home Assistant Companion app in kiosk mode) is the classic use for this layout. Point the browser at the dashboard URL and the panel view fills the screen.
+
+Expect to tune it: a phone in portrait crops the three-column layout badly, so use landscape, and hide the browser in the kiosk settings. Dark theme suits a wall display better than light.
+
+### Where it does not fit
+
+- Not a dashboard for phones you carry around. No navigation, no buttons, no history graphs.
+- Not multi-view. It is one view showing now, today, and nothing else.
+
+If you run it somewhere else and it looks good, open an issue or a PR and it can move from untested to tested.
+
 
 ## Contributing
 
