@@ -1,0 +1,5 @@
+# config/homewizard-dashboard.yaml
+# A YAML-mode dashboard is a list of views. This one has a single view,
+# kept in its own file so the dashboard stays readable.
+views:
+  - !include views/homewizard.yaml

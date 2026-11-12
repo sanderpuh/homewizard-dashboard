@@ -1,0 +1,14 @@
+# Add to configuration.yaml
+# Only needed if you keep dashboards in YAML files. The view itself is in
+# examples/homewizard-dashboard.yaml, or paste dashboard.yaml into the UI.
+#
+# Do not add "mode: yaml" here unless every dashboard you own is in YAML
+# mode -- it switches the whole dashboard list to files.
+lovelace:
+  dashboards:
+    homewizard:
+      mode: yaml
+      title: HomeWizard
+      icon: mdi:transmission-tower
+      show_in_sidebar: true
+      filename: homewizard-dashboard.yaml

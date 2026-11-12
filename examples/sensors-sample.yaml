@@ -1,0 +1,24 @@
+# Minimal template sensors for testing the dashboard without real hardware.
+# Replace every value with your own source entity, or delete this file.
+template:
+  - sensor:
+      - name: "Electricity consumption"
+        unique_id: electricity_consumption_now
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        state: "{{ states('sensor.p1_meter_power') | float(0) }}"
+
+      - name: "Electricity generation"
+        unique_id: electricity_generation_now
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        state: "{{ states('sensor.inverter_output_power') | float(0) }}"
+
+      - name: "Solar self-use"
+        unique_id: solar_self_use_today
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        state: "{{ states('sensor.energy_selfuse_daily') | float(0) }}"

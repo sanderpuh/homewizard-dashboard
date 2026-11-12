@@ -1,0 +1,654 @@
+type: panel
+path: homewizard
+title: HomeWizard
+background: '#101010'
+cards:
+  - type: custom:html-template-card
+    ignore_line_breaks: true
+    content: >
+      {# ================================================== #}
+      {#                1. MEASUREMENT REGISTRY             #}
+      {# ================================================== #}
+      {#
+        This is the central list of measurements available
+        to the dashboard. Customize this section to connect
+        the dashboard to your own Home Assistant entities.
+
+        Each measurement has a unique ID, for example:
+          electricity_now
+          gas_today
+          temperature_now
+
+        The ID is used later in the display assignments.
+
+        Measurement properties:
+          name:
+            A descriptive name for the measurement.
+
+          entity:
+            The Home Assistant entity ID providing the value.
+            Replace this with an entity from your own setup.
+
+          unit:
+            The unit displayed alongside the measurement.
+            Examples: W, kWh, m³, L, °C, %, €.
+
+          icon:
+            Determines which icon is displayed in the right
+            column. Supported values include:
+            bolt, solar, flame, water, thermometer, battery.
+
+          category:
+            A descriptive grouping: Now, Today or Costs.
+            This is metadata and does not assign the display.
+
+          max:
+            The default maximum value for the gauge or bar.
+            For example, 5000 means the gauge reaches its
+            maximum at 5000 W.
+
+          decimals:
+            Number of decimal places used when displaying
+            the measurement.
+
+          absolute:
+            Optional metadata retained from the measurement
+            definition. It does not control the display logic.
+
+        To add a measurement:
+          1. Copy an existing measurement entry.
+          2. Give it a unique ID.
+          3. Change its entity, name, unit, icon and values.
+          4. Use its ID in the display assignments below.
+
+        Make sure the entity exists in Home Assistant and
+        returns a numeric state.
+      #}
+
+      {% set measurements = {
+        'electricity_now': {
+          'name': 'Electricity consumption',
+          'entity': 'sensor.electricity_consumption_now',
+          'unit': 'W', 'icon': 'bolt', 'category': 'Now',
+          'max': 5000, 'decimals': 0, 'absolute': true
+        },
+        'generation_now': {
+          'name': 'Electricity generation',
+          'entity': 'sensor.electricity_generation_now',
+          'unit': 'W', 'icon': 'solar', 'category': 'Now',
+          'max': 5000, 'decimals': 0, 'absolute': true
+        },
+        'water_flow_now': {
+          'name': 'Water flow',
+          'entity': 'sensor.water_flow',
+          'unit': 'L/min', 'icon': 'water', 'category': 'Now',
+          'max': 30, 'decimals': 1
+        },
+        'temperature_now': {
+          'name': 'Temperature',
+          'entity': 'sensor.temperature',
+          'unit': '°C', 'icon': 'thermometer', 'category': 'Now',
+          'max': 30, 'decimals': 1
+        },
+        'humidity_now': {
+          'name': 'Air humidity',
+          'entity': 'sensor.air_humidity',
+          'unit': '%', 'icon': 'humidity', 'category': 'Now',
+          'max': 100, 'decimals': 0
+        },
+        'battery_now': {
+          'name': 'Battery charge',
+          'entity': 'sensor.battery_charge',
+          'unit': '%', 'icon': 'battery', 'category': 'Now',
+          'max': 100, 'decimals': 0
+        },
+
+        'electricity_today': {
+          'name': 'Electricity consumption',
+          'entity': 'sensor.electricity_consumption_today',
+          'unit': 'kWh', 'icon': 'bolt', 'category': 'Today',
+          'max': 25, 'decimals': 1
+        },
+        'exported_today': {
+          'name': 'Electricity generation',
+          'entity': 'sensor.electricity_generation_today',
+          'unit': 'kWh', 'icon': 'solar', 'category': 'Today',
+          'max': 25, 'decimals': 1
+        },
+        'gas_today': {
+          'name': 'Gas consumption',
+          'entity': 'sensor.gas_consumption_today',
+          'unit': 'm³', 'icon': 'flame', 'category': 'Today',
+          'max': 10, 'decimals': 1
+        },
+        'water_today': {
+          'name': 'Water consumption',
+          'entity': 'sensor.water_consumption_today',
+          'unit': 'L', 'icon': 'water', 'category': 'Today',
+          'max': 500, 'decimals': 0
+        },
+        'solar_today': {
+          'name': 'Solar generation',
+          'entity': 'sensor.solar_generation_today',
+          'unit': 'kWh', 'icon': 'solar', 'category': 'Today',
+          'max': 25, 'decimals': 1
+        },
+        'self_use_today': {
+          'name': 'Solar self-use',
+          'entity': 'sensor.solar_self_use_today',
+          'unit': 'kWh', 'icon': 'solar', 'category': 'Today',
+          'max': 25, 'decimals': 1
+        },
+
+        'electricity_costs': {
+          'name': 'Electricity costs',
+          'entity': 'sensor.electricity_costs_today',
+          'unit': '€', 'icon': 'bolt', 'category': 'Costs',
+          'max': 10, 'decimals': 2
+        },
+        'electricity_revenue': {
+          'name': 'Electricity revenue',
+          'entity': 'sensor.electricity_revenue_today',
+          'unit': '€', 'icon': 'solar', 'category': 'Costs',
+          'max': 10, 'decimals': 2
+        },
+        'gas_costs': {
+          'name': 'Gas costs',
+          'entity': 'sensor.gas_costs_today',
+          'unit': '€', 'icon': 'flame', 'category': 'Costs',
+          'max': 10, 'decimals': 2
+        },
+        'water_costs': {
+          'name': 'Water costs',
+          'entity': 'sensor.water_costs_today',
+          'unit': '€', 'icon': 'water', 'category': 'Costs',
+          'max': 10, 'decimals': 2
+        },
+        'solar_revenue': {
+          'name': 'Solar revenue',
+          'entity': 'sensor.solar_revenue_today',
+          'unit': '€', 'icon': 'solar', 'category': 'Costs',
+          'max': 10, 'decimals': 2
+        }
+      } %}
+
+      {# ================================================== #}
+      {#                 2. DISPLAY ASSIGNMENTS             #}
+      {# ================================================== #}
+      {#
+        Select which registered measurements appear in each
+        dashboard position.
+
+        Change the IDs below to any matching ID from the
+        measurement registry above.
+
+        Available positions:
+          main_gauge:
+            Large central gauge.
+
+          upper_middle:
+            Upper middle circular gauge.
+
+          lower_middle:
+            Lower middle circular gauge.
+
+          right_top:
+            Top item in the right-hand column.
+
+          right_middle:
+            Middle item in the right-hand column.
+
+          right_bottom:
+            Bottom item in the right-hand column.
+
+        The lower-left and lower-right values are handled
+        automatically:
+          - Lower-left: exported_today
+          - Lower-right: electricity_today
+
+        These two values are only displayed when
+        main_gauge is set to electricity_now.
+
+        They are therefore not configurable through this
+        assignment section.
+      #}
+
+      {% set main_gauge = 'electricity_now' %}
+      {% set upper_middle = 'self_use_today' %}
+      {% set lower_middle = 'gas_today' %}
+      {% set right_top = 'gas_costs' %}
+      {% set right_middle = 'electricity_costs' %}
+      {% set right_bottom = 'temperature_now' %}
+
+      {# ================================================== #}
+      {#               3. DISPLAY SCALE OVERRIDES            #}
+      {# ================================================== #}
+      {#
+        Optionally override the maximum value used by each
+        gauge or progress bar.
+
+        Set an override to 0 to use the measurement's
+        default "max" value from the registry.
+
+        For example:
+          main_max_override = 6000
+
+        This makes the main gauge reach its maximum at 6000,
+        regardless of the registry value.
+
+        Temperature has a separate minimum and maximum
+        because its gauge uses a temperature range rather
+        than the normal zero-to-maximum calculation.
+      #}
+
+      {% set main_max_override = 0 %}
+      {% set upper_max_override = 0 %}
+      {% set lower_max_override = 0 %}
+      {% set top_max_override = 0 %}
+      {% set middle_max_override = 0 %}
+      {% set bottom_max_override = 0 %}
+
+      {% set temperature_min_c = 15 %}
+      {% set temperature_max_c = 30 %}
+
+      {# ================================================== #}
+      {#                4. SAFE MEASUREMENT LOOKUP          #}
+      {# ================================================== #}
+      {#
+        The selected registry entries are loaded here.
+
+        Missing IDs use a fallback definition, preventing
+        invalid assignments from breaking the dashboard.
+
+        The lower-left and lower-right measurements are
+        loaded directly from the registry because they are
+        fixed dashboard elements rather than configurable
+        display assignments.
+      #}
+
+      {% set fallback = {
+        'name': 'Unavailable measurement',
+        'entity': '',
+        'unit': '',
+        'icon': 'unknown',
+        'category': '',
+        'max': 1,
+        'decimals': 1
+      } %}
+
+      {% set main = measurements.get(main_gauge, fallback) %}
+      {% set left = measurements.get('exported_today', fallback) %}
+      {% set right = measurements.get('electricity_today', fallback) %}
+      {% set upper = measurements.get(upper_middle, fallback) %}
+      {% set lower = measurements.get(lower_middle, fallback) %}
+      {% set top = measurements.get(right_top, fallback) %}
+      {% set middle = measurements.get(right_middle, fallback) %}
+      {% set bottom = measurements.get(right_bottom, fallback) %}
+
+      {% set main_state = states(main.entity) if main.entity else 'unavailable' %}
+      {% set left_state = states(left.entity) if left.entity else 'unavailable' %}
+      {% set right_state = states(right.entity) if right.entity else 'unavailable' %}
+      {% set upper_state = states(upper.entity) if upper.entity else 'unavailable' %}
+      {% set lower_state = states(lower.entity) if lower.entity else 'unavailable' %}
+      {% set top_state = states(top.entity) if top.entity else 'unavailable' %}
+      {% set middle_state = states(middle.entity) if middle.entity else 'unavailable' %}
+      {% set bottom_state = states(bottom.entity) if bottom.entity else 'unavailable' %}
+
+      {% set main_available = is_number(main_state) %}
+      {% set left_available = is_number(left_state) %}
+      {% set right_available = is_number(right_state) %}
+      {% set upper_available = is_number(upper_state) %}
+      {% set lower_available = is_number(lower_state) %}
+      {% set top_available = is_number(top_state) %}
+      {% set middle_available = is_number(middle_state) %}
+      {% set bottom_available = is_number(bottom_state) %}
+
+      {% set main_value = main_state | float(0) %}
+      {% set left_value = left_state | float(0) %}
+      {% set right_value = right_state | float(0) %}
+      {% set upper_value = upper_state | float(0) %}
+      {% set lower_value = lower_state | float(0) %}
+      {% set top_value = top_state | float(0) %}
+      {% set middle_value = middle_state | float(0) %}
+      {% set bottom_value = bottom_state | float(0) %}
+
+      {% set main_max = main_max_override if main_max_override > 0 else main.max %}
+      {% set upper_max = upper_max_override if upper_max_override > 0 else upper.max %}
+      {% set lower_max = lower_max_override if lower_max_override > 0 else lower.max %}
+      {% set top_max = top_max_override if top_max_override > 0 else top.max %}
+      {% set middle_max = middle_max_override if middle_max_override > 0 else middle.max %}
+      {% set bottom_max = bottom_max_override if bottom_max_override > 0 else bottom.max %}
+
+      {# ================================================== #}
+      {#                    5. SAFE RATIOS                  #}
+      {# ================================================== #}
+      {#
+        Converts measurement values into ratios between
+        0 and 1 for the dashboard's circular gauges and
+        progress indicators.
+
+        Values are limited to the available gauge range.
+        Unavailable measurements or invalid maximum values
+        result in a ratio of zero.
+
+        Temperature uses its dedicated minimum and maximum
+        range when the selected bottom measurement is a
+        thermometer.
+      #}
+
+      {% set main_ratio = 0 %}
+      {% set upper_ratio = 0 %}
+      {% set lower_ratio = 0 %}
+      {% set top_ratio = 0 %}
+      {% set middle_ratio = 0 %}
+      {% set bottom_ratio = 0 %}
+
+      {% if main_available and main_max > 0 %}
+        {% set main_ratio = [(main_value | abs / main_max), 1] | min %}
+      {% endif %}
+      {% if upper_available and upper_max > 0 %}
+        {% set upper_ratio = [[upper_value / upper_max, 1] | min, 0] | max %}
+      {% endif %}
+      {% if lower_available and lower_max > 0 %}
+        {% set lower_ratio = [[lower_value / lower_max, 1] | min, 0] | max %}
+      {% endif %}
+      {% if top_available and top_max > 0 %}
+        {% set top_ratio = [[top_value / top_max, 1] | min, 0] | max %}
+      {% endif %}
+      {% if middle_available and middle_max > 0 %}
+        {% set middle_ratio = [[middle_value / middle_max, 1] | min, 0] | max %}
+      {% endif %}
+      {% if bottom_available and bottom_max > 0 %}
+        {% if bottom.icon == 'thermometer' and temperature_max_c > temperature_min_c %}
+          {% set bottom_ratio = [[(bottom_value - temperature_min_c) / (temperature_max_c - temperature_min_c), 1] | min, 0] | max %}
+        {% else %}
+          {% set bottom_ratio = [[bottom_value / bottom_max, 1] | min, 0] | max %}
+        {% endif %}
+      {% endif %}
+
+      {# ================================================== #}
+      {#                6. DISPLAY FORMATTING               #}
+      {# ================================================== #}
+      {#
+        Prepares measurement values for display.
+
+        This section handles:
+          - Decimal precision from the measurement registry.
+          - Missing or unavailable values.
+          - Integer formatting for larger gauge values.
+          - Splitting right-column values into integer and
+            fractional parts to preserve SVG alignment.
+          - Negative signs for right-column measurements.
+
+        These calculations are internal. Customize the
+        measurement registry or display assignments above
+        rather than changing this section.
+      #}
+
+      {% set main_display = (main_value | abs | round(main.decimals)) if main_available else '—' %}
+      {% set left_display = (left_value | round(left.decimals)) if left_available else '—' %}
+      {% set right_display = (right_value | round(right.decimals)) if right_available else '—' %}
+      {% set upper_display = ((upper_value | round(0) | int) if (upper_value | abs) >= 10 else (upper_value | round(upper.decimals))) if upper_available else '—' %}
+      {% set lower_display = ((lower_value | round(0) | int) if (lower_value | abs) >= 10 else (lower_value | round(lower.decimals))) if lower_available else '—' %}
+
+      {# Split right-column values into integer and fractional parts, preserving the original SVG alignment. #}
+      {% set top_scale = 10 ** top.decimals %}
+      {% set middle_scale = 10 ** middle.decimals %}
+      {% set bottom_scale = 10 ** bottom.decimals %}
+
+      {% set top_scaled = ((top_value | abs) * top_scale) | round(0) | int %}
+      {% set middle_scaled = ((middle_value | abs) * middle_scale) | round(0) | int %}
+      {% set bottom_scaled = ((bottom_value | abs) * bottom_scale) | round(0) | int %}
+
+      {% set top_integer = top_scaled // top_scale %}
+      {% set top_fraction = top_scaled % top_scale %}
+      {% set middle_integer = middle_scaled // middle_scale %}
+      {% set middle_fraction = middle_scaled % middle_scale %}
+      {% set bottom_integer = bottom_scaled // bottom_scale %}
+      {% set bottom_fraction = bottom_scaled % bottom_scale %}
+
+      {% set top_sign = '-' if top_value < 0 else '' %}
+      {% set middle_sign = '-' if middle_value < 0 else '' %}
+      {% set bottom_sign = '-' if bottom_value < 0 else '' %}
+
+      {% set top_integer_display = top_sign ~ top_integer if top_available else '—' %}
+      {% set middle_integer_display = middle_sign ~ middle_integer if middle_available else '—' %}
+      {% set bottom_integer_display = bottom_sign ~ bottom_integer if bottom_available else '—' %}
+
+      {% set top_fraction_display = ('%0*d' | format(top.decimals, top_fraction)) if top_available and top.decimals > 0 else '' %}
+      {% set middle_fraction_display = ('%0*d' | format(middle.decimals, middle_fraction)) if middle_available and middle.decimals > 0 else '' %}
+      {% set bottom_fraction_display = ('%0*d' | format(bottom.decimals, bottom_fraction)) if bottom_available and bottom.decimals > 0 else '' %}
+
+      {# ================================================== #}
+      {#                    7. SVG DISPLAY                  #}
+      {# ================================================== #}
+      {#
+        The SVG below defines the dashboard's visual layout.
+
+        It contains the central gauge, middle gauges,
+        right-hand measurement column, icons, progress
+        indicators and daily electricity values.
+
+        The layout scales to the available viewport height
+        and maintains its aspect ratio.
+
+        The lower-left and lower-right daily values are
+        intentionally shown only when the main gauge is
+        assigned to electricity_now.
+
+        Avoid changing SVG coordinates, sizing, or styling
+        unless you intend to modify the dashboard layout.
+      #}
+
+      <div style="
+        --dashboard-available-height: calc(
+          100dvh
+          - var(--header-height, 56px)
+          - var(--safe-area-inset-top, 0px)
+          - var(--view-container-padding-top, 0px)
+          - var(--safe-area-inset-bottom, 0px)
+          - var(--view-container-padding-bottom, 0px)
+        );
+        width:100%;
+        height:auto;
+        display:flex;
+        align-items:flex-start;
+        justify-content:center;
+        box-sizing:border-box;
+        padding:0;
+        margin:0;
+        overflow:hidden;
+      ">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="62 51.75 898.5 506.75"
+          preserveAspectRatio="xMidYMin meet"
+          style="display:block;flex:0 1 auto;width:min(100%, calc(var(--dashboard-available-height) * 1.7730636));height:auto;max-width:100%;margin:0;padding:0;"
+        >
+          <defs>
+            <linearGradient id="powerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a33bff"/>
+              <stop offset="100%" stop-color="#7125db"/>
+            </linearGradient>
+            <linearGradient id="exportGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#75e957"/>
+              <stop offset="100%" stop-color="#29b85b"/>
+            </linearGradient>
+            <linearGradient id="solarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#75e957"/>
+              <stop offset="100%" stop-color="#29b85b"/>
+            </linearGradient>
+            <linearGradient id="gasGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff1685"/>
+              <stop offset="100%" stop-color="#d50062"/>
+            </linearGradient>
+          </defs>
+
+          <rect x="0" y="0" width="1000" height="600" fill="#101010"/>
+
+          <!-- MAIN GAUGE -->
+          <circle cx="270" cy="270" r="137" fill="none"
+            stroke="{% if main_value < 0 and main_available %}#17472d{% else %}#351957{% endif %}"
+            stroke-width="18"/>
+          {% if main_available and main_value < 0 %}
+            <g transform="translate(540 0) scale(-1 1)">
+              <circle cx="270" cy="270" r="137" fill="none"
+                stroke="url(#exportGrad)" stroke-width="18" stroke-linecap="round"
+                stroke-dasharray="{{ (860.8 * main_ratio) | round(1) }} 860.8"
+                transform="rotate(-90 270 270)"/>
+            </g>
+          {% else %}
+            <circle cx="270" cy="270" r="137" fill="none"
+              stroke="url(#powerGrad)" stroke-width="18" stroke-linecap="round"
+              stroke-dasharray="{{ (860.8 * main_ratio) | round(1) }} 860.8"
+              transform="rotate(-90 270 270)"/>
+          {% endif %}
+          <text x="270" y="285" text-anchor="middle" fill="#ffffff"
+            font-family="Arial" font-size="54" font-weight="700">{{ main_display }}</text>
+          <text x="270" y="329" text-anchor="middle"
+            fill="{% if main_value < 0 and main_available %}#67d45b{% else %}#a33bff{% endif %}"
+            font-family="Arial" font-size="27" font-weight="700">{{ main.unit }}</text>
+
+
+          {% if main_gauge == 'electricity_now' %}
+            <!-- LOWER LEFT: DAILY EXPORT -->
+            <g transform="translate(205 460)">
+              <path d="M0 12 V-10 M-8 -2 L0 -10 L8 -2" fill="none"
+                stroke="#67d45b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="15" y="8" fill="#ffffff" font-family="Arial" font-size="27" font-weight="700">{{ left_display }}</text>
+            </g>
+          
+            <!-- LOWER RIGHT: DAILY IMPORT -->
+            <g transform="translate(277 460)">
+              <path d="M0 -10 V12 M-8 4 L0 12 L8 4" fill="none"
+                stroke="#a33bff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="15" y="8" fill="#ffffff" font-family="Arial" font-size="27" font-weight="700">{{ right_display }}</text>
+            </g>
+          
+            <!-- SHARED UNIT -->
+            <text x="270" y="505" text-anchor="middle" fill="#aaaaaa"
+              font-family="Arial" font-size="17" font-weight="700">kWh</text>
+          {% endif %}
+
+
+          <!-- UPPER MIDDLE GAUGE -->
+          <circle cx="570" cy="180" r="70" fill="none" stroke="#153b25" stroke-width="13"/>
+          <circle cx="570" cy="180" r="70" fill="none" stroke="url(#solarGrad)"
+            stroke-width="13" stroke-linecap="round"
+            stroke-dasharray="{{ (439.82 * upper_ratio) | round(1) }} 439.82"
+            transform="rotate(-90 570 180)"/>
+          <text x="570" y="190" text-anchor="middle" fill="#ffffff"
+            font-family="Arial" font-size="54" font-weight="700">{{ upper_display }}</text>
+          <text x="570" y="219" text-anchor="middle" fill="#67d45b"
+            font-family="Arial" font-size="20" font-weight="700">{{ upper.unit }}</text>
+
+          <!-- LOWER MIDDLE GAUGE -->
+          <circle cx="570" cy="395" r="88" fill="none" stroke="#49132f" stroke-width="15"/>
+          <circle cx="570" cy="395" r="88" fill="none" stroke="url(#gasGrad)"
+            stroke-width="15" stroke-linecap="round"
+            stroke-dasharray="{{ (552.92 * lower_ratio) | round(1) }} 552.92"
+            transform="rotate(-90 570 395)"/>
+          <text x="570" y="405" text-anchor="middle" fill="#ffffff"
+            font-family="Arial" font-size="54" font-weight="700">{{ lower_display }}</text>
+          <text x="570" y="436" text-anchor="middle" fill="#ed3994"
+            font-family="Arial" font-size="21" font-weight="700">{{ lower.unit }}</text>
+
+          <!-- RIGHT COLUMN TOP ICON -->
+          <g transform="translate(730 180)">
+            {% if top.icon == 'flame' %}
+              <path d="M0 -25 C-3 -16 10 -11 9 1 C9 13 2 21 -7 20 C-17 19 -21 9 -17 0 C-14 -9 -7 -16 -7 -25 C-1 -19 2 -14 1 -8 C7 -14 8 -19 4 -25"
+                fill="none" stroke="#eeeeee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            {% elif top.icon == 'water' %}
+              <path d="M0 -24 C-8 -10 -17 0 -17 10 A17 17 0 0 0 17 10 C17 0 8 -10 0 -24 Z"
+                fill="none" stroke="#eeeeee" stroke-width="3"/>
+            {% elif top.icon == 'thermometer' %}
+              <path d="M-5 -22 A5 5 0 0 1 5 -22 V4 A12 12 0 1 1 -5 4 Z"
+                fill="none" stroke="#eeeeee" stroke-width="3"/>
+            {% elif top.icon == 'solar' %}
+              <circle cx="0" cy="0" r="10" fill="none" stroke="#eeeeee" stroke-width="3"/>
+              <path d="M0 -25 V-17 M0 17 V25 M-25 0 H-17 M17 0 H25 M-18 -18 L-13 -13 M13 13 L18 18 M18 -18 L13 -13 M-13 13 L-18 18"
+                fill="none" stroke="#eeeeee" stroke-width="3"/>
+            {% elif top.icon == 'battery' %}
+              <rect x="-16" y="-12" width="29" height="24" rx="3" fill="none" stroke="#eeeeee" stroke-width="3"/>
+              <path d="M13 -5 H18 V5 H13" fill="none" stroke="#eeeeee" stroke-width="3"/>
+            {% else %}
+              <path d="M7 -25 L-12 2 H0 L-5 25 L15 -6 H3 L10 -25 Z"
+                fill="none" stroke="#eeeeee" stroke-width="3" stroke-linejoin="round"/>
+            {% endif %}
+          </g>
+          <text x="882" y="194" text-anchor="end" fill="#ffffff"
+            font-family="Arial" font-size="54" font-weight="700">{{ top_integer_display }}</text>
+          <text x="884" y="170" fill="#c0c0c0" font-family="Arial" font-size="24" font-weight="700">{{ top.unit }}</text>
+          {% if top_available and top.decimals > 0 %}
+            <text x="884" y="194" fill="#a6a6a6" font-family="Arial" font-size="24" font-weight="700">{{ top_fraction_display }}</text>
+          {% endif %}
+          <rect x="775" y="218" width="140" height="6" rx="3" fill="#505050"/>
+          <rect x="775" y="218" width="{{ (140 * top_ratio) | round(1) }}"
+            height="6" rx="3" fill="#e8e8e8"/>
+
+          <!-- RIGHT COLUMN MIDDLE ICON -->
+          <g transform="translate(730 325)">
+            {% if middle.icon == 'flame' %}
+              <path d="M0 -25 C-3 -16 10 -11 9 1 C9 13 2 21 -7 20 C-17 19 -21 9 -17 0 C-14 -9 -7 -16 -7 -25 C-1 -19 2 -14 1 -8 C7 -14 8 -19 4 -25"
+                fill="none" stroke="#67d45b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            {% elif middle.icon == 'water' %}
+              <path d="M0 -24 C-8 -10 -17 0 -17 10 A17 17 0 0 0 17 10 C17 0 8 -10 0 -24 Z"
+                fill="none" stroke="#67d45b" stroke-width="3"/>
+            {% elif middle.icon == 'thermometer' %}
+              <path d="M-5 -22 A5 5 0 0 1 5 -22 V4 A12 12 0 1 1 -5 4 Z"
+                fill="none" stroke="#67d45b" stroke-width="3"/>
+            {% elif middle.icon == 'solar' %}
+              <circle cx="0" cy="0" r="10" fill="none" stroke="#67d45b" stroke-width="3"/>
+              <path d="M0 -25 V-17 M0 17 V25 M-25 0 H-17 M17 0 H25 M-18 -18 L-13 -13 M13 13 L18 18 M18 -18 L13 -13 M-13 13 L-18 18"
+                fill="none" stroke="#67d45b" stroke-width="3"/>
+            {% elif middle.icon == 'battery' %}
+              <rect x="-16" y="-12" width="29" height="24" rx="3" fill="none" stroke="#67d45b" stroke-width="3"/>
+              <path d="M13 -5 H18 V5 H13" fill="none" stroke="#67d45b" stroke-width="3"/>
+            {% else %}
+              <path d="M7 -25 L-12 2 H0 L-5 25 L15 -6 H3 L10 -25 Z"
+                fill="none" stroke="#67d45b" stroke-width="3.5" stroke-linejoin="round"/>
+            {% endif %}
+          </g>
+          <text x="882" y="339" text-anchor="end" fill="#ffffff"
+            font-family="Arial" font-size="54" font-weight="700">{{ middle_integer_display }}</text>
+          <text x="884" y="315" fill="#c0c0c0" font-family="Arial" font-size="24" font-weight="700">{{ middle.unit }}</text>
+          {% if middle_available and middle.decimals > 0 %}
+            <text x="884" y="339" fill="#a6a6a6" font-family="Arial" font-size="24" font-weight="700">{{ middle_fraction_display }}</text>
+          {% endif %}
+          <rect x="775" y="363" width="140" height="6" rx="3" fill="#30452b"/>
+          <rect x="775" y="363" width="{{ (140 * middle_ratio) | round(1) }}"
+            height="6" rx="3" fill="#67d45b"/>
+
+          <!-- RIGHT COLUMN BOTTOM ICON -->
+          <g transform="translate(730 470)">
+            {% if bottom.icon == 'flame' %}
+              <path d="M0 -25 C-3 -16 10 -11 9 1 C9 13 2 21 -7 20 C-17 19 -21 9 -17 0 C-14 -9 -7 -16 -7 -25 C-1 -19 2 -14 1 -8 C7 -14 8 -19 4 -25"
+                fill="none" stroke="#ff851b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            {% elif bottom.icon == 'water' %}
+              <path d="M0 -24 C-8 -10 -17 0 -17 10 A17 17 0 0 0 17 10 C17 0 8 -10 0 -24 Z"
+                fill="none" stroke="#ff851b" stroke-width="3"/>
+            {% elif bottom.icon == 'solar' %}
+              <circle cx="0" cy="0" r="10" fill="none" stroke="#ff851b" stroke-width="3"/>
+              <path d="M0 -25 V-17 M0 17 V25 M-25 0 H-17 M17 0 H25 M-18 -18 L-13 -13 M13 13 L18 18 M18 -18 L13 -13 M-13 13 L-18 18"
+                fill="none" stroke="#ff851b" stroke-width="3"/>
+            {% elif bottom.icon == 'battery' %}
+              <rect x="-16" y="-12" width="29" height="24" rx="3" fill="none" stroke="#ff851b" stroke-width="3"/>
+              <path d="M13 -5 H18 V5 H13" fill="none" stroke="#ff851b" stroke-width="3"/>
+            {% else %}
+              <path d="M-5 -22 A5 5 0 0 1 5 -22 V4 A12 12 0 1 1 -5 4 Z"
+                fill="none" stroke="#ff851b" stroke-width="3"/>
+              <path d="M0 -12 V8" fill="none" stroke="#ff851b" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="0" cy="10" r="5" fill="#ff851b"/>
+            {% endif %}
+          </g>
+          <text x="882" y="484" text-anchor="end" fill="#ffffff"
+            font-family="Arial" font-size="54" font-weight="700">{{ bottom_integer_display }}</text>
+          <text x="884" y="463" fill="#c0c0c0" font-family="Arial" font-size="24" font-weight="700">{{ bottom.unit }}</text>
+          {% if bottom_available and bottom.decimals > 0 %}
+            <text x="884" y="484" fill="#a6a6a6" font-family="Arial" font-size="24" font-weight="700">{{ bottom_fraction_display }}</text>
+          {% endif %}
+          <rect x="775" y="508" width="140" height="6" rx="3" fill="#513522"/>
+          <circle cx="{{ (775 + 140 * bottom_ratio) | round(1) }}" cy="511"
+            r="6" fill="#ff851b"/>
+        </svg>
+      </div>
