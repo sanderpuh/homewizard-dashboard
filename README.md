@@ -119,7 +119,7 @@ Scale overrides let you stretch a gauge without touching the registry. `0` means
 {% set temperature_max_c = 30 %}
 ```
 
-Full details in [docs/configuration.md](docs/configuration.md).
+Full details in [docs/configuration.md](docs/configuration.md). For troubleshooting see [docs/troubleshooting.md](docs/troubleshooting.md).
 
 ### Entities
 
@@ -129,9 +129,7 @@ Every entity ID in the template matches its friendly name, so the dashboard read
 
 `bolt`, `solar`, `flame`, `water`, `thermometer`, `battery`, and anything else falls through to a generic bolt. All icons are inline SVG, so they work without any icon set.
 
-### Troubleshooting
 
-Blank card, `unavailable` values, clipping on odd screen sizes: [docs/troubleshooting.md](docs/troubleshooting.md).
 
 ## Example setups
 
@@ -153,18 +151,11 @@ An old phone or tablet running a kiosk browser (Fully Kiosk Browser, WallPanel, 
 
 Expect to tune it: a phone in portrait crops the three-column layout badly, so use landscape, and hide the browser in the kiosk settings. Dark theme suits a wall display better than light.
 
-### Where it does not fit
-
-- Not a dashboard for phones you carry around. No navigation, no buttons, no history graphs.
-- Not multi-view. It is one view showing now, today, and nothing else.
-
 If you run it somewhere else and it looks good, open an issue or a PR and it can move from untested to tested.
 
 
-## Contributing
+## Contributing and license
 
 Issues and pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## License
 
 MIT, see [LICENSE](LICENSE).
