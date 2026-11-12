@@ -158,4 +158,4 @@ If you run it somewhere else and it looks good, open an issue or a PR and it can
 
 Issues and pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-MIT, see [LICENSE](LICENSE).
+MIT license, see [LICENSE](LICENSE).
