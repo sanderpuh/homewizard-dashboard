@@ -6,7 +6,7 @@ Built for wall tablets and kiosk browsers: one panel view, no page scrolling, an
 
 ![Dashboard preview](docs/preview.png)
 
-Sample values shown: 1.84 kW import, 4.6 kWh self-use, 3.4 m³ gas, €4.42 gas costs, €1.94 electricity costs, 21.6 °C.
+Sample values shown: 1840 W net power consumption, 4.6 kWh self-use solar energy, 3.4 m³ gas, €4.42 gas costs, €1.94 electricity costs, 21.6 °C indoor temperature.
 
 ## What you get
 
